@@ -10,8 +10,23 @@ describe("general", function() {
 describe("SEND function", function() {
     var RANDOM_CHANNEL = "even";
     var RANDOM_ROUTE = "rrr";
+    var listenerObj, listenerObj2;
+    var routes;
 
-    it("should throw error if no argument is provided", function() {
+    beforeEach(function() {
+        routes = vnerv.resetRoutes();
+        listenerObj = {
+            callback: function() {
+            }
+        };
+
+        listenerObj2 = {
+            callback: function() {
+            }
+        };
+    });
+
+    it("should throw an error if no argument is provided", function() {
         expect(function() {
             vnerv.send()
         }).toThrowError();
@@ -19,15 +34,9 @@ describe("SEND function", function() {
 
     it("should not call listener callback for not existing channels", function() {
         //given
-        var listenerObj = {
-            callback: function() {
-                return "anything";
-            }
-        };
         spyOn(listenerObj, 'callback');
-        var routes = vnerv.getRoutes();
-        routes["channel"] = {};
-        routes["channel"]["randomRoute"] = [listenerObj];
+        routes["notExistingChannel"] = {};
+        routes["notExistingChannel"]["notExistingRoute"] = [listenerObj];
 
         //when
         vnerv.send(RANDOM_CHANNEL, RANDOM_ROUTE);
@@ -36,16 +45,11 @@ describe("SEND function", function() {
         expect(listenerObj.callback).not.toHaveBeenCalled();
     });
 
-    it ("should call listener callback for existing channel", function() {
+    it("should call listener callback for existing channel and route without DTO", function() {
         //given
-        var listenerObj = {
-            callback: function() {
-                return "anything";
-            }
-        };
-        spyOn(listenerObj, 'callback').and.callThrough();
+        spyOn(listenerObj, 'callback');
+        spyOn(listenerObj2, 'callback');
 
-        var routes = vnerv.getRoutes();
         routes[RANDOM_CHANNEL] = {};
         routes[RANDOM_CHANNEL][RANDOM_ROUTE] = [];
         routes[RANDOM_CHANNEL][RANDOM_ROUTE].push(listenerObj);
@@ -55,5 +59,39 @@ describe("SEND function", function() {
 
         //then
         expect(listenerObj.callback).toHaveBeenCalled();
+        expect(listenerObj2.callback).not.toHaveBeenCalled();
+    });
+
+    it("should call listener callback for existing channel and route with DTO", function() {
+        //given
+        spyOn(listenerObj, 'callback');
+        var dto = {message: "ddd"};
+
+        routes[RANDOM_CHANNEL] = {};
+        routes[RANDOM_CHANNEL][RANDOM_ROUTE] = [];
+        routes[RANDOM_CHANNEL][RANDOM_ROUTE].push(listenerObj);
+
+        //when
+        vnerv.send(RANDOM_CHANNEL, RANDOM_ROUTE, dto);
+
+        //then
+        expect(listenerObj.callback).toHaveBeenCalledWith(dto);
+    });
+
+    it("should call all listener callbacks for existing channel", function() {
+        spyOn(listenerObj, 'callback');
+        spyOn(listenerObj2, 'callback');
+
+        routes[RANDOM_CHANNEL] = {};
+        routes[RANDOM_CHANNEL][RANDOM_ROUTE] = [];
+        routes[RANDOM_CHANNEL][RANDOM_ROUTE].push(listenerObj);
+        routes[RANDOM_CHANNEL][RANDOM_ROUTE].push(listenerObj2);
+
+        //when
+        vnerv.send(RANDOM_CHANNEL, RANDOM_ROUTE);
+
+        //then
+        expect(listenerObj.callback).toHaveBeenCalled();
+        expect(listenerObj2.callback).toHaveBeenCalled();
     });
 });
