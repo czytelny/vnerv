@@ -1,0 +1,31 @@
+{
+  "name": "vnerv",
+  "version": "0.0.1",
+  "homepage" : "https://github.com/czytelny/vnerv",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/czytelny/vnerv.git"
+  },
+  "description": "Tiny javascript library for event broadcasting",
+  "keywords": [
+    "events",
+    "eventbus",
+    "broadcasting",
+    "event",
+    "broadcast",
+    "lightweight"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "test",
+    "tests"
+  ],
+  "devDependencies": {
+    "gulp": "^3.9.0",
+    "karma": "latest",
+    "karma-jasmine": "latest",
+    "karma-phantomjs-launcher": "latest"
+  }
+}
