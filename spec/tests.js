@@ -7,6 +7,30 @@ describe("general", function() {
     });
 });
 
+describe("ON function", function() {
+    var CHANNEL = "myChannel";
+    it("should throw error if no argument is passed", function() {
+        expect(function() {
+            vnerv.on();
+        }).toThrowError();
+    });
+
+    it("should throw error if only one argument is passed", function() {
+        expect(function() {
+            vnerv.on(CHANNEL);
+        }).toThrowError();
+    });
+
+    it("should attach listener on a channel", function() {
+
+    });
+
+    it("should attach listener on a route of a channel", function() {
+
+    });
+
+});
+
 describe("SEND function", function() {
     var CHANNEL = "myChannel";
     var CHANNEL2 = "myChannel2";

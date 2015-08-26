@@ -9,8 +9,19 @@ var vnerv = (function() {
     }
 
     return {
-        on: function(channel, route, callback, scope) {
-            //todo
+        on: function(channel, route, callback) {
+            var argLength = arguments.length;
+            var _route;
+
+            switch (argLength){
+                case 0:
+                    throw Error("Channel and callback must be specified");
+                    break;
+                case 1:
+                    throw Error("Channel and callback must be specified");
+                    break;
+
+            }
         },
 
         off: function(channel, route, scope) {
