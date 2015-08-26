@@ -19,14 +19,15 @@ var vnerv = (function() {
 
         send: function(channel, route, dto) {
             var _route, _dto;
-            var argsLength = arguments.length;
+            var argLength = arguments.length;
+
             var callListenersCallback = function(listenersArray) {
-                console.log("LISTERENSAARAY "+JSON.stringify(listenersArray));
                 for (var i = 0; i < listenersArray.length; i++) {
                     listenersArray[i].callback(_dto);
                 }
             };
-            switch (argsLength) {
+
+            switch (argLength) {
                 case 0:
                     throw Error('A channel must be specified');
                     break;
@@ -48,14 +49,14 @@ var vnerv = (function() {
             }
 
             if (_route){
-                var listeners = routes[channel][_route];
-                callListenersCallback(listeners);
+                var listenersArray = routes[channel][_route];
+                callListenersCallback(listenersArray);
             } else {
-                var channelListeners = routes[channel];
-
-                for (var routeListener in channelListeners) {
-                    if (channelListeners.hasOwnProperty(routeListener)) {
-                        callListenersCallback(channelListeners[routeListener]);
+                //calling for all routes on the channel
+                var channelRoutes = routes[channel];
+                for (var r in channelRoutes) {
+                    if (channelRoutes.hasOwnProperty(r)) {
+                        callListenersCallback(channelRoutes[r]);
                     }
                 }
             }

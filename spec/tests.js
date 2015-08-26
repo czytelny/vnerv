@@ -8,24 +8,40 @@ describe("general", function() {
 });
 
 describe("SEND function", function() {
-    var RANDOM_CHANNEL = "even";
-    var RANDOM_ROUTE = "rrr";
-    var listenerObj, listenerObj2;
+    var CHANNEL = "myChannel";
+    var CHANNEL2 = "myChannel2";
+    var ROUTE = "myRoute";
+    var ROUTE2 = "myRoute2";
+    var listener1Route1, listener2Route1, listener1Route2;
     var routes;
 
     beforeEach(function() {
         routes = vnerv.resetRoutes();
-        listenerObj = {
+
+        listener1Route1 = {
             callback: function() {
-                return null;
             }
         };
 
-        listenerObj2 = {
+        listener2Route1 = {
             callback: function() {
-                return null;
             }
         };
+
+        listener1Route2 = {
+            callback: function() {
+
+            }
+        };
+
+        routes[CHANNEL] = {};
+        routes[CHANNEL][ROUTE] = [listener1Route1, listener2Route1];
+        routes[CHANNEL2] = {};
+        routes[CHANNEL2][ROUTE2] = [listener1Route2];
+
+        spyOn(listener1Route1, 'callback');
+        spyOn(listener2Route1, 'callback');
+        spyOn(listener1Route2, 'callback');
     });
 
     it("should throw an error if no argument is provided", function() {
@@ -34,69 +50,67 @@ describe("SEND function", function() {
         }).toThrowError();
     });
 
-    it("should not call listener callback for not existing channels", function() {
-        //given
-        spyOn(listenerObj, 'callback');
-        routes["notExistingChannel"] = {};
-        routes["notExistingChannel"]["notExistingRoute"] = [listenerObj];
-
+    it("should not call listener callback for not existing channel&route", function() {
         //when
-        vnerv.send(RANDOM_CHANNEL, RANDOM_ROUTE);
+        vnerv.send("NOT_EXISTING", "NOT_EXISTING");
 
         //then
-        expect(listenerObj.callback).not.toHaveBeenCalled();
+        expect(listener1Route1.callback).not.toHaveBeenCalled();
+        expect(listener1Route2.callback).not.toHaveBeenCalled();
+    });
+
+    it("should not call any callback for not existing channel", function() {
+        //when
+        vnerv.send("NOT_EXISTING");
+
+        //then
+        expect(listener1Route1.callback).not.toHaveBeenCalled();
+        expect(listener1Route2.callback).not.toHaveBeenCalled();
     });
 
     it("should call listener callback for existing channel and route without DTO", function() {
-        //given
-        spyOn(listenerObj, 'callback');
-        spyOn(listenerObj2, 'callback');
-
-        routes[RANDOM_CHANNEL] = {};
-        routes[RANDOM_CHANNEL][RANDOM_ROUTE] = [];
-        routes[RANDOM_CHANNEL][RANDOM_ROUTE].push(listenerObj);
-
         //when
-        vnerv.send(RANDOM_CHANNEL, RANDOM_ROUTE);
+        vnerv.send(CHANNEL, ROUTE);
 
         //then
-        expect(listenerObj.callback).toHaveBeenCalled();
-        expect(listenerObj2.callback).not.toHaveBeenCalled();
+        expect(listener1Route1.callback).toHaveBeenCalled();
+        expect(listener2Route1.callback).toHaveBeenCalled();
+        expect(listener1Route2.callback).not.toHaveBeenCalled();
     });
 
-    it("should call listener callback for existing channel and route with DTO", function() {
+    it("should call listeners callback for existing channel&route with DTO", function() {
         //given
-        spyOn(listenerObj, 'callback');
         var dto = {message: "ddd"};
 
-        routes[RANDOM_CHANNEL] = {};
-        routes[RANDOM_CHANNEL][RANDOM_ROUTE] = [];
-        routes[RANDOM_CHANNEL][RANDOM_ROUTE].push(listenerObj);
-
         //when
-        vnerv.send(RANDOM_CHANNEL, RANDOM_ROUTE, dto);
+        vnerv.send(CHANNEL, ROUTE, dto);
 
         //then
-        expect(listenerObj.callback).toHaveBeenCalledWith(dto);
+        expect(listener1Route1.callback).toHaveBeenCalledWith(dto);
+        expect(listener2Route1.callback).toHaveBeenCalledWith(dto);
+        expect(listener1Route2.callback).not.toHaveBeenCalled();
     });
 
-    it("should call all listener callbacks for existing channel", function() {
-       //given
-        spyOn(listenerObj, 'callback');
-        spyOn(listenerObj2, 'callback');
-        var ANOTHER_ROUTE = "ANOTHER_RANDOM_ROUTE";
-        routes[RANDOM_CHANNEL] = {};
-        routes[RANDOM_CHANNEL][RANDOM_ROUTE] = [];
-        routes[RANDOM_CHANNEL][ANOTHER_ROUTE] = [];
-
-        routes[RANDOM_CHANNEL][RANDOM_ROUTE].push(listenerObj);
-        routes[RANDOM_CHANNEL][ANOTHER_ROUTE].push(listenerObj2);
-
+    it("should call all listeners callbacks for existing channel without DTO", function() {
         //when
-        vnerv.send(RANDOM_CHANNEL);
+        vnerv.send(CHANNEL);
 
         //then
-        expect(listenerObj.callback).toHaveBeenCalled();
-        expect(listenerObj2.callback).toHaveBeenCalled();
+        expect(listener1Route1.callback).toHaveBeenCalled();
+        expect(listener2Route1.callback).toHaveBeenCalled();
+        expect(listener1Route2.callback).not.toHaveBeenCalled();
+    });
+
+    it("should call all listeners callbacks for existing channel along with DTO", function() {
+        //given
+        var dto = {message: "ddd"};
+
+        //when
+        vnerv.send(CHANNEL, dto);
+
+        //then
+        expect(listener1Route1.callback).toHaveBeenCalledWith(dto);
+        expect(listener2Route1.callback).toHaveBeenCalledWith(dto);
+        expect(listener1Route2.callback).not.toHaveBeenCalled();
     });
 });
