@@ -1,61 +1,73 @@
 "use strict";
 
 var vnerv = (function() {
+    var routes = {};
+    var DEFAULT_ROUTE = "__root";
 
-        var routes = {};
-        var DEFAULT_ROUTE = "root";
+    function isString(object) {
+        return (typeof object === 'string' || object instanceof String);
+    }
 
-        function isString(object) {
-            return (typeof object === 'string' || object instanceof String);
-        }
+    return {
+        on: function(channel, route, callback, scope) {
+            //todo
+        },
 
-        return {
-            on: function(channel, route, callback, scope) {
-                //todo
-            },
+        off: function(channel, route, scope) {
+            //todo
+        },
 
-            off: function(channel, route, scope) {
-                //todo
-            },
-
-            send: function(channel, route, dto) {
-                var r = DEFAULT_ROUTE, transferObject = null;
-
-                var argLength = arguments.length;
-                if (argLength === 0) {
-                    throw Error('A channel must be specified');
+        send: function(channel, route, dto) {
+            var _route, _dto;
+            var argsLength = arguments.length;
+            var callListenersCallback = function(listenersArray) {
+                console.log("LISTERENSAARAY "+JSON.stringify(listenersArray));
+                for (var i = 0; i < listenersArray.length; i++) {
+                    listenersArray[i].callback(_dto);
                 }
-
-                if (argLength === 2) {
+            };
+            switch (argsLength) {
+                case 0:
+                    throw Error('A channel must be specified');
+                    break;
+                case 2:
                     if (isString(arguments[1])) {
-                        r = arguments[1];
-                    } else {
-                        transferObject = arguments[1];
+                        _route = arguments[1];
+                        break;
+                    }
+                    _dto = arguments[1];
+                    break;
+                case 3:
+                    _route = route;
+                    _dto = dto;
+                    break;
+            }
+            //channel doesn't exist
+            if (!routes[channel]) {
+                return;
+            }
+
+            if (_route){
+                var listeners = routes[channel][_route];
+                callListenersCallback(listeners);
+            } else {
+                var channelListeners = routes[channel];
+
+                for (var routeListener in channelListeners) {
+                    if (channelListeners.hasOwnProperty(routeListener)) {
+                        callListenersCallback(channelListeners[routeListener]);
                     }
                 }
-                else if (arguments.length == 3) {
-                    r = route;
-                    transferObject = dto;
-                }
-
-                if (!routes[channel] || !routes[channel][r]) {
-                    return;
-                }
-
-                var listeners = routes[channel][r], len = listeners.length;
-
-                for (var i = 0; i < len; i++) {
-                    routes[channel][r][i].callback(transferObject);
-                }
-            },
-
-            getRoutes: function() {
-                return routes;
-            },
-
-            resetRoutes: function() {
-                routes = {};
-                return routes;
             }
-        };
-    })();
+        },
+
+        getRoutes: function() {
+            return routes;
+        },
+
+        resetRoutes: function() {
+            routes = {};
+            return routes;
+        }
+    };
+})();

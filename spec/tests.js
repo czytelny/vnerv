@@ -17,11 +17,13 @@ describe("SEND function", function() {
         routes = vnerv.resetRoutes();
         listenerObj = {
             callback: function() {
+                return null;
             }
         };
 
         listenerObj2 = {
             callback: function() {
+                return null;
             }
         };
     });
@@ -79,16 +81,19 @@ describe("SEND function", function() {
     });
 
     it("should call all listener callbacks for existing channel", function() {
+       //given
         spyOn(listenerObj, 'callback');
         spyOn(listenerObj2, 'callback');
-
+        var ANOTHER_ROUTE = "ANOTHER_RANDOM_ROUTE";
         routes[RANDOM_CHANNEL] = {};
         routes[RANDOM_CHANNEL][RANDOM_ROUTE] = [];
+        routes[RANDOM_CHANNEL][ANOTHER_ROUTE] = [];
+
         routes[RANDOM_CHANNEL][RANDOM_ROUTE].push(listenerObj);
-        routes[RANDOM_CHANNEL][RANDOM_ROUTE].push(listenerObj2);
+        routes[RANDOM_CHANNEL][ANOTHER_ROUTE].push(listenerObj2);
 
         //when
-        vnerv.send(RANDOM_CHANNEL, RANDOM_ROUTE);
+        vnerv.send(RANDOM_CHANNEL);
 
         //then
         expect(listenerObj.callback).toHaveBeenCalled();
