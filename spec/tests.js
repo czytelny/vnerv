@@ -9,6 +9,14 @@ describe("general", function() {
 
 describe("ON function", function() {
     var CHANNEL = "myChannel";
+    var ROUTE = "myRoute";
+    var DEFAULT_ROUTE = "__root";
+    var routes;
+
+    beforeEach(function() {
+        routes = vnerv.resetEventBus();
+    });
+
     it("should throw error if no argument is passed", function() {
         expect(function() {
             vnerv.on();
@@ -21,12 +29,45 @@ describe("ON function", function() {
         }).toThrowError();
     });
 
-    it("should attach listener on a channel", function() {
+    it("should throw error if two strings are passed", function() {
+        expect(function() {
+            vnerv.on(CHANNEL, ROUTE);
+        }).toThrowError();
+    });
 
+    it("should attach listener on a channel on a default route", function() {
+        //given
+        var callbackFun = jasmine.createSpy('callbackFun');
+
+        //when
+        vnerv.on(CHANNEL, callbackFun);
+
+        //then
+        expect(vnerv.getEventBus()[CHANNEL][DEFAULT_ROUTE].length).toBe(1);
     });
 
     it("should attach listener on a route of a channel", function() {
+        //given
+        var callbackFun = jasmine.createSpy('callbackFun');
 
+        //when
+        vnerv.on(CHANNEL, ROUTE, callbackFun);
+
+        //then
+        expect(vnerv.getEventBus()[CHANNEL][ROUTE].length).toBe(1);
+    });
+
+    it("should attach listener with specific callback on a route of a channel", function() {
+        //given
+        var callbackFun = function() {
+        };
+
+
+        //when
+        vnerv.on(CHANNEL, ROUTE, callbackFun);
+
+        //then
+        expect(vnerv.getEventBus()[CHANNEL][ROUTE].shift().callback).toBe(callbackFun);
     });
 
 });
@@ -40,7 +81,7 @@ describe("SEND function", function() {
     var routes;
 
     beforeEach(function() {
-        routes = vnerv.resetRoutes();
+        routes = vnerv.resetEventBus();
 
         listener1Route1 = {
             callback: function() {

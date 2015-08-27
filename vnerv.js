@@ -1,17 +1,21 @@
 "use strict";
 
 var vnerv = (function() {
-    var routes = {};
+    var eventBus = {};
     var DEFAULT_ROUTE = "__root";
 
     function isString(object) {
         return (typeof object === 'string' || object instanceof String);
     }
 
+    function isObject(object) {
+        return (typeof object === "function")
+    }
+
     return {
         on: function(channel, route, callback) {
             var argLength = arguments.length;
-            var _route;
+            var _route, _callback;
 
             switch (argLength){
                 case 0:
@@ -20,8 +24,38 @@ var vnerv = (function() {
                 case 1:
                     throw Error("Channel and callback must be specified");
                     break;
+                case 2:
+                    //channel and route specified
+                    if(isString(route) || !isString(channel)){
+                        throw Error("Channel and callback function must be specified");
+                    }
+                    //channel and callback specified
+                    _route = DEFAULT_ROUTE;
+                    _callback = route;
+                    break;
+                case 3:
+                    if(isString(channel) && isString(route) && isObject(callback)){
+                        _route = route;
+                        _callback = callback;
+                    } else {
+                        throw Error("Channel, route and callback function must be specified");
+                    }
+                    break;
 
             }
+            //channel doesn't exist
+            if(!eventBus[channel]) {
+                eventBus[channel] = {};
+            }
+            //route doesn't exist
+            if(!eventBus[channel][_route]){
+                eventBus[channel][_route] = [];
+            }
+
+            eventBus[channel][_route].push({
+                callback: _callback
+            })
+
         },
 
         off: function(channel, route, scope) {
@@ -55,16 +89,16 @@ var vnerv = (function() {
                     break;
             }
             //channel doesn't exist
-            if (!routes[channel]) {
+            if (!eventBus[channel]) {
                 return;
             }
 
             if (_route){
-                var listenersArray = routes[channel][_route];
+                var listenersArray = eventBus[channel][_route];
                 callListenersCallback(listenersArray);
             } else {
                 //calling for all routes on the channel
-                var channelRoutes = routes[channel];
+                var channelRoutes = eventBus[channel];
                 for (var r in channelRoutes) {
                     if (channelRoutes.hasOwnProperty(r)) {
                         callListenersCallback(channelRoutes[r]);
@@ -73,13 +107,13 @@ var vnerv = (function() {
             }
         },
 
-        getRoutes: function() {
-            return routes;
+        getEventBus: function() {
+            return eventBus;
         },
 
-        resetRoutes: function() {
-            routes = {};
-            return routes;
+        resetEventBus: function() {
+            eventBus = {};
+            return eventBus;
         }
     };
 })();
