@@ -1,4 +1,7 @@
-# vnerv
+# vnerv 
+[![Build Status](https://travis-ci.org/czytelny/vnerv.svg?branch=master)](https://travis-ci.org/czytelny/vnerv)
+
+
 Tiny library for event broadcasting
 
 I started this library as a fork of nice micro framework called Nerve - https://github.com/jstandish/nerve. 
