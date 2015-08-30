@@ -42,7 +42,7 @@ Additionally you can remove all default listeners attached to the given channel
 ```javascript
   vnerv.off("channel", {defaultRoute: true});
 ```
-To do so, pass configuration object with 'defaultRoute' flag set to 'true' as the second argument
+To do so, pass configuration object with `defaultRoute` flag set to `true` as the second argument
 
 ## Sending an event
 You have two basic options:
