@@ -8,7 +8,7 @@ var vnerv = (function() {
         return (typeof object === 'string' || object instanceof String);
     }
 
-    function isObject(object) {
+    function isFunction(object) {
         return (typeof object === "function")
     }
 
@@ -34,7 +34,7 @@ var vnerv = (function() {
                     _callback = route;
                     break;
                 case 3:
-                    if(isString(channel) && isString(route) && isObject(callback)){
+                    if(isString(channel) && isString(route) && isFunction(callback)){
                         _route = route;
                         _callback = callback;
                     } else {
@@ -54,12 +54,40 @@ var vnerv = (function() {
 
             eventBus[channel][_route].push({
                 callback: _callback
-            })
+            });
 
         },
 
-        off: function(channel, route, scope) {
-            //todo
+        off: function(channel, route) {
+            var argLength = arguments.length;
+
+            switch(argLength) {
+                case 0:
+                    throw Error('A channel must be specified');
+                    break;
+                case 1:
+                    if(!isString(channel)) {
+                        throw Error('A channel cannot be an Object');
+                    }
+                    break;
+                case 2:
+                    if(!isString(channel)) {
+                        throw Error('A channel cannot be an Object');
+                    }
+                    break;
+            }
+
+            if(typeof route === "undefined") {
+                delete eventBus[channel];
+            }
+
+            if(isString(route)) {
+                delete eventBus[channel][route];
+            }
+
+            if(typeof route === "object" && route.defaultRoute === true) {
+                delete eventBus[channel][DEFAULT_ROUTE];
+            }
         },
 
         send: function(channel, route, dto) {
@@ -116,4 +144,4 @@ var vnerv = (function() {
             return eventBus;
         }
     };
-})();
+}());

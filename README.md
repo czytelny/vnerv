@@ -27,6 +27,23 @@ Optionally, you can also specify a route:
   });
 ```
 
+## Remove listeners
+To remove listeners use `off` function and specify channel from where they should be removed:
+```javascript
+  vnerv.off("channel");
+```
+
+You can also remove listeners that are only present on given route of the channel
+```javascript
+  vnerv.off("channel", "route");
+```
+
+Additionally you can remove all default listeners attached to the given channel
+```javascript
+  vnerv.off("channel", {defaultRoute: true});
+```
+To do so, pass configuration object with `defaultRoute` flag set to `true` as the second argument
+
 ## Sending an event
 You have two basic options:
 ##### Send an event to a channel
