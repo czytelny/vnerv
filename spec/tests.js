@@ -72,6 +72,102 @@ describe("ON function", function() {
 
 });
 
+describe("OFF function", function() {
+    var DEFAULT_ROUTE = "__root";
+    var CHANNEL = "myChannel";
+    var CHANNEL2 = "myChannel2";
+    var ROUTE = "myRoute";
+    var ROUTE2 = "myRoute2";
+    var routes;
+    var DTO = {};
+
+    beforeEach(function() {
+        routes = vnerv.resetEventBus();
+
+        routes[CHANNEL] = {};
+        routes[CHANNEL][DEFAULT_ROUTE] = [{}];
+        routes[CHANNEL][ROUTE] = [{}, {}];
+
+        routes[CHANNEL2] = {};
+        routes[CHANNEL2][DEFAULT_ROUTE] = [{}];
+        routes[CHANNEL2][ROUTE2] = [{}];
+    });
+
+    it("should throw error if no argument is passed", function() {
+        expect(function() {
+            vnerv.off();
+        }).toThrowError();
+    });
+
+    it("should throw error if only object is passed as an argument", function() {
+        expect(function() {
+            vnerv.off(DTO);
+        }).toThrowError();
+    });
+
+    it("should throw error if object is passed as the first argument", function() {
+        expect(function() {
+            vnerv.off(DTO, CHANNEL);
+        }).toThrowError();
+    });
+
+    it("should remove entire channel for specified channel only", function() {
+        //when
+        vnerv.off(CHANNEL);
+
+        //then
+        expect(routes[CHANNEL]).toBeUndefined();
+        expect(routes[CHANNEL2]).toBeDefined();
+    });
+
+    it("should remove channel's route, for specified route&channel", function() {
+        //when
+        vnerv.off(CHANNEL, ROUTE);
+
+        //then
+        expect(routes[CHANNEL]).toBeDefined();
+        expect(routes[CHANNEL][DEFAULT_ROUTE]).toBeDefined();
+        expect(routes[CHANNEL][ROUTE]).toBeUndefined();
+    });
+
+    it("should remove channel's default route , for defined route & configuration object", function() {
+        //given
+        DTO = {defaultRoute: true};
+
+        //when
+        vnerv.off(CHANNEL, DTO);
+
+        //then
+        expect(routes[CHANNEL]).toBeDefined();
+        expect(routes[CHANNEL][ROUTE]).toBeDefined();
+        expect(routes[CHANNEL][DEFAULT_ROUTE]).toBeUndefined();
+
+    });
+
+    it("should leave all channels untouched if channel definition does not match any of them", function() {
+        //when
+        vnerv.off("NOT_EXISTING");
+
+        //then
+        expect(routes[CHANNEL]).toBeDefined();
+        expect(routes[CHANNEL][ROUTE]).toBeDefined();
+        expect(routes[CHANNEL][DEFAULT_ROUTE]).toBeDefined();
+        expect(routes[CHANNEL2]).toBeDefined();
+        expect(routes[CHANNEL2][ROUTE2]).toBeDefined();
+        expect(routes[CHANNEL2][DEFAULT_ROUTE]).toBeDefined();
+    });
+
+    it("should leave channel untouched if route inside it is non-existent", function() {
+        //when
+        vnerv.off(CHANNEL, "NOT_EXISTING");
+
+        //then
+        expect(routes[CHANNEL]).toBeDefined();
+        expect(routes[CHANNEL][ROUTE]).toBeDefined();
+        expect(routes[CHANNEL][DEFAULT_ROUTE]).toBeDefined();
+    });
+});
+
 describe("SEND function", function() {
     var CHANNEL = "myChannel";
     var CHANNEL2 = "myChannel2";
