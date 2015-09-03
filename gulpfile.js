@@ -1,10 +1,12 @@
 var gulp = require('gulp');
 var Server = require('karma').Server;
 var uglify = require('gulp-uglify');
+var rename = require('gulp-rename');
 
 gulp.task('uglify', function() {
   return gulp.src('vnerv.js')
     .pipe(uglify())
+    .pipe(rename('vnerv.min.js'))
     .pipe(gulp.dest('dist'));
 });
 
