@@ -15,7 +15,7 @@ Nevertheless basic idea is the same - sending events along channels and routes.
 To attach listener use `on` function and specify channel with callback:
 ```javascript
   vnerv.on("channel", function(dto) {
-     console.log('I'm a callback function and I received: ' + dto);
+     console.log("I am a callback function and I received: " + dto);
   });
 ```
 The callback function will be executed when a message appear on that channel.
@@ -23,7 +23,7 @@ The callback function will be executed when a message appear on that channel.
 Optionally, you can also specify a route:
 ```javascript
   vnerv.on("channel", 'route', function(dto) {
-     console.log('I'm a callback function and I received: ' + dto);
+     console.log("I am a callback function and I received: " + dto);
   });
 ```
 
