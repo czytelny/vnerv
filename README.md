@@ -9,8 +9,6 @@ I decided to create a separate repository because of a fundamental change - drop
 
 Nevertheless basic idea is the same - sending events along channels and routes.
 
-## It is a 'WIP' repo. Library is not ready for usage
-
 ## Attach listeners
 To attach listener use `on` function and specify channel with callback:
 ```javascript
@@ -62,3 +60,5 @@ As a addition in both cases you can attach DTO object which is passed to a callb
 ```javascript
   vnerv.send("channel", "route", {message:'hi'} );
 ```
+## Versions
+1.0 - Initial version
