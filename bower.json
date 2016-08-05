@@ -3,7 +3,8 @@
   "description": "Tiny javascript library for event broadcasting",
   "main": "vnerv.js",
   "authors": [
-    "czytelny <czytelny@gmail.com>"
+    "Michal Chwedczuk <czytelny@gmail.com>",
+    "Maciej Pawluk <m.blizniak@gmail.com>"
   ],
   "license": "MIT",
   "keywords": [

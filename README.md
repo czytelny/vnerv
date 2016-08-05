@@ -9,6 +9,17 @@ I decided to create a separate repository because of a fundamental change - drop
 
 Nevertheless basic idea is the same - sending events along channels and routes.
 
+
+```
+bower install vnerv
+```
+
+```
+npm install vnerv
+```
+
+#Documentation
+
 ## Attach listeners
 To attach listener use `on` function and specify channel with callback:
 ```javascript

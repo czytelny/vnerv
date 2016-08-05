@@ -1,7 +1,7 @@
 {
   "name": "vnerv",
   "version": "1.0.0",
-  "homepage" : "https://github.com/czytelny/vnerv",
+  "homepage": "https://github.com/czytelny/vnerv",
   "repository": {
     "type": "git",
     "url": "https://github.com/czytelny/vnerv.git"
@@ -30,5 +30,15 @@
     "karma-phantomjs-launcher": "latest",
     "gulp-uglify": "latest",
     "gulp-rename": "latest"
-  }
+  },
+  "contributors": [
+    {
+      "name": "Michał Chwedczuk",
+      "email": "czytelny@gmail.com"
+    },
+    {
+      "name": "Maciej Pawluk",
+      "email": "m.blizniak@gmail.com"
+    }
+  ]
 }
