@@ -1,0 +1,24 @@
+{
+  "name": "vnerv",
+  "description": "Tiny javascript library for event broadcasting",
+  "main": "vnerv.js",
+  "authors": [
+    "czytelny <czytelny@gmail.com>"
+  ],
+  "license": "MIT",
+  "keywords": [
+    "events",
+    "eventbus",
+    "broadcasting",
+    "event",
+    "broadcast",
+    "lightweight"
+  ],
+  "homepage": "https://github.com/czytelny/vnerv",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "spec"
+  ]
+}
