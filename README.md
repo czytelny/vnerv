@@ -9,16 +9,18 @@ I decided to create a separate repository because of a fundamental change - drop
 
 Nevertheless basic idea is the same - sending events along channels and routes.
 
-
+# Installation
 ```
 bower install vnerv
 ```
+
+or
 
 ```
 npm install vnerv
 ```
 
-#Documentation
+# Documentation
 
 ## Attach listeners
 To attach listener use `on` function and specify channel with callback:
