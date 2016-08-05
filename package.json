@@ -25,6 +25,7 @@
   "devDependencies": {
     "gulp": "^3.9.0",
     "karma": "latest",
+    "jasmine-core": "^2.4.1",
     "karma-jasmine": "latest",
     "karma-phantomjs-launcher": "latest",
     "gulp-uglify": "latest",
